@@ -14,156 +14,27 @@ body > div {
   flex-direction:column;
 }
 </style>
-        <script src="web3min.js"></script>
 <body>
+
 <div id="welcome-div">Welcom to Cat Clicker! Click the button for points, spend points to get random cat photos!</div>
+
 <hr>
+
 <div id="pnts-div">Current points: <span id="pnts-span">0</span></div>
+
 <hr>
+
 <div id="btn-div" style="">
 <button onclick="pushButton()">Click!</button>
 <button onclick="spend()">Spend 5</button>
 </div>
+
 <hr>
+
 <div id="cat-div"></div>
 
+<script src="web3min.js"></script>
+<script src="web3config.js"></script>
+<script src="utils.js"></script>
 </body>
-<script>
-const contractAddress = "0x60e93104eb22BAea5254B2e07B9Ad57461c49506"
-const myABI = [
-	{
-		"inputs": [],
-		"stateMutability": "nonpayable",
-		"type": "constructor"
-	},
-	{
-		"anonymous": false,
-		"inputs": [
-			{
-				"indexed": false,
-				"internalType": "string",
-				"name": "_value",
-				"type": "string"
-			}
-		],
-		"name": "CatPhotoPurchased",
-		"type": "event"
-	},
-	{
-		"inputs": [],
-		"name": "count",
-		"outputs": [
-			{
-				"internalType": "uint256",
-				"name": "",
-				"type": "uint256"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "address",
-				"name": "apocalypse",
-				"type": "address"
-			}
-		],
-		"name": "destroy",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [],
-		"name": "getCount",
-		"outputs": [
-			{
-				"internalType": "uint256",
-				"name": "",
-				"type": "uint256"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [],
-		"name": "pushButton",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [],
-		"name": "spend",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	}
-]
-
-const web3 = new Web3(window.ethereum);
-const contract = new web3.eth.Contract(myABI, contractAddress);
-
-async function pushButton() {
-  const accounts = await ethereum.request({ method: 'eth_requestAccounts' });
-  const account  = accounts[0];
-   
-  contract.methods.pushButton().send({
-    from: account,
-    gas: 233000
-  })
-  
-  setCount();
-}
-
-async function setCount() {
-  pointsSpan = document.getElementById("pnts-span");
-  points = await contract.methods.getCount().call();
-  pointsSpan.textContent= points;
-}
-
-async function spend() {
-  const accounts = await ethereum.request({ method: 'eth_requestAccounts' });
-  const account  = accounts[0];
-  
-  contract.methods.spend().send({
-    from: account,
-    gas: 233000
-  })
-}
-
-contract.CatPhotoPurchased(function(error, result) {
-  if (!error){
-    const apiString = result.returnValues._value;
-    setCount()
-    fetch(apiString)
-    .then(resp => resp.json())
-    .then(catJson => {
-      const catUrl = catJson[0].url;
-      const catImg = document.createElement('img')
-      catImg.src = catUrl;
-    
-      const imgCaption = document.createElement('figcaption');
-      imgCaption.textContent = "Cat Photo courtesy of https://thecatapi.com/"
-      
-      const catDiv = document.getElementById("cat-div");
-      while(catDiv.firstChild) {
-        catDiv.removeChild(catDiv.lastChild);
-      }
-      catDiv.appendChild(catImg);
-      catDiv.appendChild(imgCaption);
-      
-    })
-  } else {
-    alert('There was an error handling the cat photo purchase')
-  }
-})
-
-window.addEventListener("load", (event) => {
-  setCount();
-});
-</script>
 </html>

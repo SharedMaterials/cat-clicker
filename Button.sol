@@ -3,16 +3,16 @@ pragma solidity >= 0.7.0 < 0.9.0;
 
 contract Button {
     event CatPhotoPurchased(string _value);
+    event ButtonPushed();
 
     string catApi = "https://api.thecatapi.com/v1/images/search";
     uint public count = 0;
 
-    constructor() {
-
-    }
+    constructor() {}
 
     function pushButton() public {
         count = count + 1;
+        emit ButtonPushed();
     }
 
     function getCount() public view returns(uint) {
