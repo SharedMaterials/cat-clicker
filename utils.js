@@ -17,7 +17,6 @@ async function setCount() {
 }
 
 async function spend() {
-  alert('Your transaction is being scheduled; You will receive a cat photo when it has been processed!')
   
   const accounts = await ethereum.request({ method: 'eth_requestAccounts' });
   const account  = accounts[0];
